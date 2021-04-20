@@ -1,0 +1,29 @@
+{
+  "name": "graphql-express",
+  "version": "1.0.0",
+  "description": "For FEW2.9",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/type9/graphql-express.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/type9/graphql-express/issues"
+  },
+  "homepage": "https://github.com/type9/graphql-express#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.5.0",
+    "node-fetch": "^2.6.1",
+    "nodemon": "^2.0.7"
+  }
+}
