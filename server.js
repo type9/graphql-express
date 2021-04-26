@@ -4,14 +4,17 @@ const { buildSchema } = require('graphql')
 require('dotenv').config()
 const fetch = require('node-fetch')
 
-const apikey = process.env.OPENWEATHERMAP_API_KEY
-
 const schema = buildSchema(`
 # schema here
 enum Units {
 	standard
 	metric
 	imperial
+}
+
+type Coordinates {
+    latitude: Float!
+    longitude: Float!
 }
 
 type Weather {
@@ -27,14 +30,15 @@ type Weather {
 }
 
 type Query {
-	getWeather(zip: Int!, units: Units): Weather!
+	getWeather(zip: Int, units: Units, coords: Coordinates): Weather!
 }
 `)
 
 const root = {
-    getWeather: async ({ zip, units = 'imperial' }) => {
+    getWeather: async ({ zip, units = 'imperial', coords=null}) => {
           const apikey = process.env.OPENWEATHERMAP_API_KEY
-          const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apikey}&units=${units}`
+          const url = coords ? 
+          `https://api.openweathermap.org/data/2.5/weather?lat=${coords.latitude}&long${coords.longitude}&appid=${apikey}&units=${units}` : `https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apikey}&units=${units}`
           const res = await fetch(url)
           const json = await res.json()
           const cod = json.cod
@@ -48,7 +52,7 @@ const root = {
           const tempMin = json.main.temp_min
           const tempMax = json.main.temp_max
           const pressure = json.main.pressure
-          const humidity = json.humidity
+          const humidity = json.main.humidity
           let returnData = { temperature, description, feelsLike, tempMin, tempMax, pressure, humidity }
           return returnData
       }
@@ -56,6 +60,8 @@ const root = {
 
 // Create an express app
 const app = express()
+const cors = require('cors')
+app.use(cors());
 
 // Define a route for GraphQL
 app.use('/graphql', graphqlHTTP({
